@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}My Diary - AgriConnect{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div class="title-section">
+        <h1>My Cultivation Diary</h1>
+        <p>Private record of your planted crops, acreage, and yield statuses.</p>
+    </div>
+    <button class="btn btn-primary btn-lg" onclick="toggleModal('addCropModal')">
+        <i class="fa-solid fa-book-medical"></i> Log New Crop
+    </button>
+</div>
+
+<div class="profile-layout">
+    <!-- Left Sidebar: Profile Card -->
+    <div class="profile-sidebar glass-panel">
+        <div class="profile-avatar text-center">
+            <div class="avatar-lg">{{ session.get('username')[0] | upper }}</div>
+            <h2>{{ session.get('username') }}</h2>
+            <p class="profile-detail"><i class="fa-solid fa-location-dot"></i> {{ session.get('location') }}</p>
+        </div>
+        <div class="profile-stats mt-4">
+            <div class="stat-row">
+                <span>Total Crops Logged:</span>
+                <strong>{{ crops|length }}</strong>
+            </div>
+            <div class="stat-row">
+                <span>Active Cultivation:</span>
+                <strong>{{ crops|rejectattr('status', 'equalto', 'Available for Sale')|list|length }}</strong>
+            </div>
+            <div class="stat-row">
+                <span>Ready for Market:</span>
+                <strong class="text-success">{{ crops|selectattr('status', 'equalto', 'Available for Sale')|list|length }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Main Area: Diary Entries -->
+    <div class="profile-content">
+        {% if crops %}
+            <div class="diary-timeline">
+                {% for crop in crops %}
+                <div class="diary-entry glass-panel">
+                    <div class="entry-header">
+                        <div class="entry-title">
+                            <h3>{{ crop.crop_name }}</h3>
+                            <span class="status-indicator status-{{ crop.status | lower | replace(' ', '-') }}">
+                                {{ crop.status }}
+                            </span>
+                        </div>
+                        <div class="entry-actions">
+                            <form action="{{ url_for('delete_crop', id=crop.id) }}" method="POST" onsubmit="return confirm('Permanently delete this diary entry?');">
+                                <button type="submit" class="btn-icon text-danger" title="Delete Entry"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="entry-body">
+                        <div class="entry-data">
+                            <i class="fa-regular fa-calendar"></i> 
+                            <strong>Planted:</strong> {{ crop.planted_date or 'Not Specified' }}
+                        </div>
+                        <div class="entry-data">
+                            <i class="fa-solid fa-chart-area"></i> 
+                            <strong>Area:</strong> {{ crop.area_size or 'Not Specified' }}
+                        </div>
+                        <div class="entry-data">
+                            <i class="fa-solid fa-shield-halved"></i> 
+                            <strong>Strategy:</strong> {{ crop.protection_strategy }}
+                        </div>
+                        <div class="entry-data">
+                            <i class="fa-solid fa-boxes-stacked"></i> 
+                            <strong>Expected Volume:</strong> {{ crop.quantity_info or 'Not Specified' }}
+                        </div>
+                    </div>
+                    <div class="entry-footer">
+                        Logged on: {{ crop.created_at[:10] }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="glass-panel empty-state">
+                <i class="fa-solid fa-book-open"></i>
+                <p>Your diary is empty. Start logging your cultivation journey!</p>
+                <button class="btn btn-outline mt-3" onclick="toggleModal('addCropModal')">Add First Crop</button>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Crop Modal (Moved from Dashboard to Diary) -->
+<div class="modal" id="addCropModal">
+    <div class="modal-content glass-panel">
+        <span class="close-btn" onclick="toggleModal('addCropModal')">&times;</span>
+        <h2>Log Crop Details</h2>
+        <p class="modal-subtitle">Add a new entry to your private cultivation diary. This will be shared securely on the regional board.</p>
+        
+        <form action="{{ url_for('add_crop') }}" method="POST">
+            <div class="form-group">
+                <label for="crop_name">Crop Name</label>
+                <input type="text" id="crop_name" name="crop_name" required placeholder="e.g. Sweet Corn, Wheat">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group half-width">
+                    <label for="planted_date">Planted Date</label>
+                    <input type="date" id="planted_date" name="planted_date">
+                </div>
+                <div class="form-group half-width">
+                    <label for="area_size">Area Size (Acres/Hectares)</label>
+                    <input type="text" id="area_size" name="area_size" placeholder="e.g. 5 Acres">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="protection_strategy">Protection Strategy</label>
+                <input type="text" id="protection_strategy" name="protection_strategy" required placeholder="e.g. Organic, Pesticide X">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half-width">
+                    <label for="status">Cultivation Status</label>
+                    <select id="status" name="status" required>
+                        <option value="Planned">Planned</option>
+                        <option value="Planted" selected>Planted</option>
+                        <option value="Growing">Growing</option>
+                        <option value="Harvesting Soon">Harvesting Soon</option>
+                        <option value="Available for Sale">Available for Sale</option>
+                    </select>
+                </div>
+                <div class="form-group half-width">
+                    <label for="quantity_info">Expected Volume</label>
+                    <input type="text" id="quantity_info" name="quantity_info" placeholder="e.g. 500 Tons">
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" onclick="toggleModal('addCropModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save to Diary</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

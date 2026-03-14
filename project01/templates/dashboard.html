@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - AgriConnect{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div class="title-section">
+        <h1>Regional Crop Dashboard</h1>
+        <p>Monitor local production to prevent oversupply and plan your strategies.</p>
+    </div>
+    <a href="{{ url_for('profile') }}" class="btn btn-outline btn-lg">
+        <i class="fa-solid fa-address-book"></i> My Diary Profile
+    </a>
+</div>
+
+<!-- Quick Stats -->
+<div class="stats-grid">
+    <div class="stat-card glass-panel">
+        <div class="stat-icon"><i class="fa-solid fa-tractor"></i></div>
+        <div class="stat-details">
+            <h3>Total Farms</h3>
+            <p class="stat-number">{{ crops|map(attribute='user_id')|unique|list|length }}</p>
+        </div>
+    </div>
+    <div class="stat-card glass-panel">
+        <div class="stat-icon"><i class="fa-solid fa-wheat-awn"></i></div>
+        <div class="stat-details">
+            <h3>Active Crops</h3>
+            <p class="stat-number">{{ crops|length }}</p>
+        </div>
+    </div>
+    <div class="stat-card glass-panel">
+        <div class="stat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="stat-details">
+            <h3>Protected Yields</h3>
+            <p class="stat-number">{{ crops|rejectattr('protection_strategy', 'equalto', 'None')|list|length }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-content">
+    <div class="table-container glass-panel">
+        <div class="table-header">
+            <h2>Current Regional Cultivation</h2>
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="tableSearch" placeholder="Search location, crop, or farmer...">
+            </div>
+        </div>
+        <table class="data-table" id="cropsTable">
+            <thead>
+                <tr>
+                    <th>Farmer</th>
+                    <th>Location</th>
+                    <th>Crop Name</th>
+                    <th>Planted Date</th>
+                    <th>Area</th>
+                    <th>Protection Strategy</th>
+                    <th>Status</th>
+                    <th>Volume/Yield</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for crop in crops %}
+                <tr class="{% if crop.user_id == current_user_id %}my-row{% endif %}">
+                    <td>
+                        <div class="farmer-info">
+                            <div class="avatar">{{ crop.username[0] | upper }}</div>
+                            <div class="details">
+                                <span class="name">{{ crop.username }}</span>
+                                <span class="contact">{{ crop.contact }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="badge locality-badge"><i class="fa-solid fa-location-dot"></i> {{ crop.location }}</span></td>
+                    <td class="font-semibold">{{ crop.crop_name }}</td>
+                    <td>{{ crop.planted_date or 'N/A' }}</td>
+                    <td>{{ crop.area_size or 'N/A' }}</td>
+                    <td>{{ crop.protection_strategy }}</td>
+                    <td>
+                        <span class="status-indicator status-{{ crop.status | lower | replace(' ', '-') }}">
+                            {{ crop.status }}
+                        </span>
+                    </td>
+                    <td>{{ crop.quantity_info or 'N/A' }}</td>
+                    <td>
+                        {% if crop.user_id == current_user_id %}
+                        <!-- Deletion moved to profile -->
+                        <a href="{{ url_for('profile') }}" class="btn-icon" title="Manage in Profile">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i class="fa-solid fa-seedling"></i>
+                        <p>No crops have been posted in your region yet. Be the first!</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    </div>
+</div>
+{% endblock %}

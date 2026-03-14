@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}AgriConnect - Smart Agriculture Network{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content container">
+        <span class="hero-badge">The Future of Agriculture</span>
+        <h1>Empowering Regional Farming</h1>
+        <p>Join a local network of farmers to balance crop production, share protection strategies, and secure your market demand before you harvest.</p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Join the Network</a>
+            <a href="#about" class="btn btn-outline-light btn-lg">Discover How</a>
+        </div>
+    </div>
+</div>
+
+<section id="about" class="landing-section container">
+    <div class="section-header">
+        <h2>About AgriConnect</h2>
+        <div class="header-line"></div>
+        <p>Building a sustainable agricultural ecosystem through local visibility.</p>
+    </div>
+    <div class="about-grid">
+        <div class="about-card glass-panel">
+            <div class="icon-circle"><i class="fa-solid fa-earth-americas"></i></div>
+            <h3>Local Insights</h3>
+            <p>Know exactly what is being planted in your locality to prevent over-saturation and price crashes.</p>
+        </div>
+        <div class="about-card glass-panel">
+            <div class="icon-circle"><i class="fa-solid fa-shield-virus"></i></div>
+            <h3>Crop Protection</h3>
+            <p>Share and discover effective crop protection strategies with neighboring farms to improve yields.</p>
+        </div>
+        <div class="about-card glass-panel">
+            <div class="icon-circle"><i class="fa-solid fa-handshake"></i></div>
+            <h3>Market Readiness</h3>
+            <p>Ensure every farmer gets a chance to sell their harvested plants by precisely balancing regional supply and demand.</p>
+        </div>
+    </div>
+</section>
+
+<section id="services" class="landing-section bg-alt">
+    <div class="container services-container">
+        <div class="services-text">
+            <h2>Our Core Services</h2>
+            <div class="header-line left-align"></div>
+            <p class="service-lead">We provide the digital infrastructure for modern farming communities to collaborate efficiently.</p>
+            
+            <div class="service-item">
+                <div class="service-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <div>
+                    <h4>Regional Dashboard</h4>
+                    <p>Get real-time analytics on local crop cultivation phases, total acreage, and projected yields.</p>
+                </div>
+            </div>
+            <div class="service-item">
+                <div class="service-icon"><i class="fa-solid fa-seedling"></i></div>
+                <div>
+                    <h4>Cultivation Ledger</h4>
+                    <p>A unified ledger where farmers document their intended crops immediately, avoiding market gluts.</p>
+                </div>
+            </div>
+            <div class="service-item">
+                <div class="service-icon"><i class="fa-solid fa-cloud-sun-rain"></i></div>
+                <div>
+                    <h4>Strategy Sharing</h4>
+                    <p>Track which pest control and climate strategies are working best among your immediate neighbors.</p>
+                </div>
+            </div>
+        </div>
+        <div class="services-image glass-panel">
+            <!-- A placeholder visual for the dashboard -->
+            <i class="fa-solid fa-chart-pie dashboard-visual-icon"></i>
+            <div class="visual-lines">
+                 <div class="line w-100"></div>
+                 <div class="line w-80"></div>
+                 <div class="line w-60"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="landing-section container">
+    <div class="contact-card glass-panel">
+        <div class="contact-info">
+            <h2>Get in Touch</h2>
+            <div class="header-line left-align"></div>
+            <p>Have questions about joining the platform? Our team is here to help your farm succeed.</p>
+            <ul class="contact-list">
+                <li><i class="fa-solid fa-envelope"></i> support@agriconnect.org</li>
+                <li><i class="fa-solid fa-phone"></i> +1 (555) 019-8472</li>
+                <li><i class="fa-solid fa-location-dot"></i> 402 Harvest Way, AgValley</li>
+            </ul>
+        </div>
+        <div class="contact-form-wrapper">
+            <form class="contact-form" action="#" method="POST" onsubmit="event.preventDefault(); alert('Message sent to our team!');">
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Your Email" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="How can we help?" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

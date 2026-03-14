@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AgriConnect{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fa-solid fa-leaf"></i> AgriConnect
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}" class="nav-item">Home</a>
+            <a href="{{ url_for('index') }}#about" class="nav-item">About</a>
+            <a href="{{ url_for('index') }}#services" class="nav-item">Services</a>
+            <a href="{{ url_for('index') }}#contact" class="nav-item">Contact</a>
+            {% if session.get('user_id') %}
+            <a href="{{ url_for('dashboard') }}" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            <div class="user-profile">
+                <span class="user-greeting">Hi, {{ session.get('username') }}</span>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline">Logout</a>
+            </div>
+            {% else %}
+            <a href="{{ url_for('login') }}" class="btn btn-primary">Login / Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container flash-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- AI Assistant Widget -->
+    <div class="ai-widget">
+        <button class="ai-toggle" id="aiToggleBtn" onclick="toggleAIChat()">
+            <i class="fa-solid fa-robot"></i>
+        </button>
+        <div class="ai-chat-window glass-panel" id="aiChatWindow">
+            <div class="ai-header">
+                <i class="fa-solid fa-leaf"></i> AgriBot Assistant
+            </div>
+            <div class="ai-messages" id="aiMessages">
+                <div class="ai-msg msg-system">
+                    Hello! I'm your agricultural AI assistant. How can I help you analyze your crop data or clarify farming doubts today?
+                </div>
+            </div>
+            <div class="ai-input-area">
+                <input type="text" id="aiInput" placeholder="Ask about crops, market, or data..." onkeypress="handleAIKeyPress(event)">
+                <button onclick="sendAIMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
